@@ -1,0 +1,30 @@
+{
+    "name": "brain/support",
+    "description": "Utilities for Brain https://github.com/Giuseppe-Mazzapica/Brain",
+    "keywords": ["WordPress"],
+    "authors": [
+        {
+            "name": "Giuseppe Mazzapica",
+            "email": "giuseppe.mazzapica@gmail.com",
+            "homepage": "http://gm.zoomlab.it",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Giuseppe-Mazzapica/BrainSupport/issues",
+        "source": "https://github.com/Giuseppe-Mazzapica/BrainSupport"
+    },
+    "license": "GPL-2.0+",
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Brain\\": "traits/"
+        },
+        "files": ["functions.php"]
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
