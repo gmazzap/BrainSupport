@@ -1,7 +1,5 @@
 <?php namespace Brain;
 
-use \Brain\Container as Brain;
-
 /**
  * Facade Class.
  *
@@ -28,7 +26,7 @@ abstract class Facade {
     abstract static function getName();
 
     public static function api() {
-        return self::getContainer()->get( static::getBindId() );
+        return Brain\Container::instance()->get( static::getBindId() );
     }
 
     public static function __callStatic( $name, $arguments ) {
