@@ -26,11 +26,11 @@ abstract class Facade {
     abstract static function getName();
 
     public static function api() {
-        return Brain\Container::instance()->get( static::getBindId() );
+        return Container::instance()->get( static::getBindId() );
     }
 
     public static function __callStatic( $name, $arguments ) {
-        if ( ! Brain::instance() instanceof Brain ) {
+        if ( ! Brain::instance() instanceof Container ) {
             return new \WP_Error( "brain-not-ready", "Brain container is not ready." );
         }
         $id = static::getBindId();
