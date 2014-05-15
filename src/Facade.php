@@ -25,6 +25,8 @@ abstract class Facade {
 
     abstract static function getBindId();
 
+    abstract static function getName();
+
     public static function api() {
         return self::getContainer()->get( static::getBindId() );
     }
@@ -34,8 +36,11 @@ abstract class Facade {
             return new \WP_Error( "brain-not-ready", "Brain container is not ready." );
         }
         $id = static::getBindId();
+        $api_name = static::getName();
+        if ( ! is_string( $api_name ) || empty( $api_name ) ) $api_name = 'unknown';
         if ( ! is_object( static::api() ) ) {
-            return new \WP_Error( "{$id}-api-not-ready", "API object is not ready for {$id}." );
+            if ( ! is_string( $id ) || empty( $id ) ) $id = 'unknown';
+            return new \WP_Error( "{$id}-api-not-ready", "{$api_name} API object is not ready." );
         }
         if ( method_exists( static::api(), $name ) ) {
             try {
@@ -44,7 +49,6 @@ abstract class Facade {
                 return \Brain\exception2WPError( $exception, $id );
             }
         } else {
-            $api_name = get_class( static::api() );
             return new \WP_Error( "{$id}-api-invalid-call", "Invalid {$api_name} API call." );
         }
     }
