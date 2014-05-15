@@ -25,7 +25,7 @@ trait Contextable {
         if ( is_null( $index ) ) {
             $context = $this->$key;
             return $context->getArrayCopy();
-        } elseif ( is_string( $index ) && $this->$key->offsetExists( $index ) ) {
+        } elseif ( $this->contextHas( $key, $index ) ) {
             $context = $this->$key;
             return $context[$index];
         } elseif ( ! is_string( $index ) || empty( $index ) ) {
@@ -42,6 +42,16 @@ trait Contextable {
             unset( $context[$index] );
         }
         return $this;
+    }
+
+    function contextHas( $key, $index = NULL ) {
+        $this->checkContextKey( $key );
+        return is_string( $index ) && $this->$key->offsetExists( $index );
+    }
+
+    function contextIs( $key, $index = NULL, $is = NULL ) {
+        $value = $this->getContext( $key, $index );
+        return $value === $is;
     }
 
     function resetContext( $key ) {
