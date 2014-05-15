@@ -30,7 +30,7 @@ abstract class Facade {
     }
 
     public static function __callStatic( $name, $arguments ) {
-        if ( ! did_action( 'brain_loaded' ) || ! Brain::instance() instanceof Brain ) {
+        if ( ! Brain::instance() instanceof Brain ) {
             return new \WP_Error( "brain-not-ready", "Brain container is not ready." );
         }
         $id = static::getBindId();
