@@ -16,11 +16,12 @@
     },
     "license": "GPL-2.0+",
     "require": {
-        "php": ">=5.4"
+        "php": ">=5.4",
+        "brain/brain": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "Brain\\": "traits/"
+            "Brain\\": "src/"
         },
         "files": ["functions.php"]
     },
