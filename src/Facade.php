@@ -21,32 +21,27 @@ use \Brain\Container as Brain;
  */
 abstract class Facade {
 
-    private static $container;
-
     abstract static function getBindId();
-
-    public static function setContainer( Brain $container ) {
-        self::$container = $container;
-        return static::$container;
-    }
-
-    public static function getContainer() {
-        return self::$container;
-    }
 
     public static function api() {
         return self::getContainer()->get( static::getBindId() );
     }
 
     public static function __callStatic( $name, $arguments ) {
+        if ( ! did_action( 'brain_loaded' ) || ! Brain::instance() instanceof Brain ) {
+            return new \WP_Error( "brain-not-ready", "Brain container is not ready." );
+        }
         $name = __CLASS__;
         $id = static::getBindId();
-        $container = self::getContainer();
-        if ( ! $container instanceof Brain || ! static::api() instanceof Striatum\API ) {
+        if ( ! is_object( static::api() ) ) {
             return new \WP_Error( "{$id}-api-not-ready", "{$name} API object is not ready." );
         }
         if ( method_exists( static::api(), $name ) ) {
-            return call_user_func_array( [ static::api(), $name ], $arguments );
+            try {
+                return call_user_func_array( [ static::api(), $name ], $arguments );
+            } catch ( Exception $exc ) {
+                return \Brain\exception2WPError( $exc, $id );
+            }
         } else {
             return new \WP_Error( "{$id}-api-invalid-call", "Invalid {$name} API call." );
         }
