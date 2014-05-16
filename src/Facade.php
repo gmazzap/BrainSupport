@@ -23,8 +23,6 @@ abstract class Facade {
 
     abstract static function getBindId();
 
-    abstract static function getName();
-
     public static function api() {
         return Container::instance()->get( static::getBindId() );
     }
