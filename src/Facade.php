@@ -34,11 +34,11 @@ abstract class Facade {
             return new \WP_Error( "brain-not-ready", "Brain container is not ready." );
         }
         $id = static::getBindId();
-        $api_name = static::getName();
-        if ( ! is_string( $api_name ) || empty( $api_name ) ) $api_name = 'unknown';
+        if ( ! is_string( $id ) || empty( $id ) ) {
+            return new \WP_Error( "brain-facade-bad-id", "Bad or empty id facade." );
+        }
         if ( ! is_object( static::api() ) ) {
-            if ( ! is_string( $id ) || empty( $id ) ) $id = 'unknown';
-            return new \WP_Error( "{$id}-api-not-ready", "{$api_name} API object is not ready." );
+            return new \WP_Error( "{$id}-api-not-ready", "API object is not ready." );
         }
         if ( method_exists( static::api(), $name ) ) {
             try {
@@ -47,7 +47,7 @@ abstract class Facade {
                 return \Brain\exception2WPError( $exception, $id );
             }
         } else {
-            return new \WP_Error( "{$id}-api-invalid-call", "Invalid {$api_name} API call." );
+            return new \WP_Error( "{$id}-api-invalid-call", "Invalid API call." );
         }
     }
 
