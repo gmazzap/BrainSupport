@@ -114,4 +114,22 @@ class ContextableTest extends TestCase {
         assertEquals( $context, $a );
     }
 
+    function testContextHas() {
+        $context = $this->get();
+        $context->context['foo'] = 'bar';
+        $context->context['bar'] = 'baz';
+        assertTrue( $context->contextHas( 'context', 'foo' ) );
+        assertTrue( $context->contextHas( 'context', 'bar' ) );
+        assertFalse( $context->contextHas( 'context', 'nope' ) );
+    }
+
+    function testContextIs() {
+        $context = $this->get();
+        $context->context['foo'] = 'bar';
+        $context->context['bar'] = 'baz';
+        assertTrue( $context->contextIs( 'context', 'foo', 'bar' ) );
+        assertTrue( $context->contextIs( 'context', 'bar', 'baz' ) );
+        assertFalse( $context->contextIs( 'context', 'foo', 'nope' ) );
+    }
+
 }
