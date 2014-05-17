@@ -21,7 +21,9 @@
  */
 abstract class Facade {
 
-    abstract static function getBindId();
+    public static function getBindId() {
+        throw new \RuntimeException( __METHOD__ . ' must be overridden in concrete facades' );
+    }
 
     public static function api() {
         return Container::instance()->get( static::getBindId() );
