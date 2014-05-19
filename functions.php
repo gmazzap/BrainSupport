@@ -1,6 +1,42 @@
 <?php namespace Brain;
 
 /**
+ * Check if the in the admin
+ *
+ * @return boolean
+ */
+function isAdmin() {
+    return is_admin() && ! isAjax();
+}
+
+/**
+ * Check if current is an ajax request
+ *
+ * @return boolean
+ */
+function isAjax() {
+    defined( 'DOING_AJAX' ) && DOING_AJAX;
+}
+
+/**
+ * Check if the theme has been loaded
+ *
+ * @return boolean
+ */
+function themeLoaded() {
+    return ( did_action( 'after_setup_theme' ) && current_filter() !== 'after_setup_theme' );
+}
+
+/**
+ * Check if backend has been inited
+ *
+ * @return boolean
+ */
+function adminInited() {
+    return ( did_action( 'admin_init' ) && current_filter() !== 'admin_init' );
+}
+
+/**
  * Convert an exception to a WP_Error.
  *
  * @param \Exception $exc   Exception to convert
