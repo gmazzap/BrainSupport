@@ -68,7 +68,7 @@ function exception2WPError( \Exception $exc = NULL, $prefix = 'brain', $code = '
  */
 function getQueryType( \WP_Query $query = NULL ) {
     if ( is_null( $query ) ) {
-        $query = $GLOBALS['wp_the_query'];
+        $query = isset( $GLOBALS['wp_query'] ) ? $GLOBALS['wp_query'] : NULL;
         if ( ! $query instanceof \WP_Query ) {
             return FALSE;
         }
