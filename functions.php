@@ -59,3 +59,41 @@ function exception2WPError( \Exception $exc = NULL, $prefix = 'brain', $code = '
     $msg .= $exc->getMessage() ? '. ' . $exc->getMessage() : '';
     return new \WP_Error( "{$prefix}-exception-" . $name, $msg );
 }
+
+/**
+ * Get the type of a WP_Query object.
+ *
+ * @param \WP_Query $query  Query object to check. If null main query is used.
+ * @return string|boolean   False when no main query available and no query object given.
+ */
+function getQueryType( \WP_Query $query = NULL ) {
+    if ( is_null( $query ) ) {
+        $query = $GLOBALS['wp_the_query'];
+        if ( ! $query instanceof \WP_Query ) {
+            return FALSE;
+        }
+    }
+    $types = [
+        'is_404'               => '404',
+        'is_search'            => 'search',
+        'is_front_page'        => 'front_page',
+        'is_home'              => 'home',
+        'is_post_type_archive' => 'archive',
+        'is_tax'               => 'taxonomy',
+        'is_attachment'        => 'attachment',
+        'is_single'            => 'single',
+        'is_page'              => 'page',
+        'is_category'          => 'category',
+        'is_tag'               => 'tag',
+        'is_author'            => 'author',
+        'is_date'              => 'date',
+        'is_comments_popup'    => 'comments_popup',
+        'is_paged'             => 'paged'
+    ];
+    foreach ( $types as $callback => $type ) {
+        if ( call_user_func( [ $query, $callback ] ) ) {
+            return $type;
+        }
+    }
+    return 'index';
+}
