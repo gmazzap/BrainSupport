@@ -97,3 +97,17 @@ function getQueryType( \WP_Query $query = NULL ) {
     }
     return 'index';
 }
+
+/**
+ * Get an array and return only items with string key
+ *
+ * @param $array    Original array
+ * @return $array   Filtered array
+ */
+function stringKeyed( Array $array = [ ] ) {
+    if ( ! empty( $array ) ) {
+        $keys = array_filter( array_keys( $array ), 'is_string' );
+        $array = empty( $keys ) ? [ ] : array_intersect_key( $array, array_flip( $keys ) );
+    }
+    return $array;
+}
