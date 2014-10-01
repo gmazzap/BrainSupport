@@ -74,7 +74,8 @@ if ( ! function_exists( 'Brain\exception2WPError' ) ) {
         } else {
             $name .= $exc->getCode() ? '-' . $exc->getCode() : '';
         }
-        $msg .= $exc->getMessage() ? '. ' . $exc->getMessage() : '';
+        $msg .= $exc->getMessage() ? '. ' . $exc->getMessage() . '. ' : '';
+        $msg .= 'STACK TRACE: ' . $exc->getTraceAsString();
         return new Error( "{$prefix}-exception-" . $name, $msg );
     }
 
