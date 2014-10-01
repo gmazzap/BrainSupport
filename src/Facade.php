@@ -47,7 +47,7 @@ abstract class Facade {
                 return \Brain\exception2WPError( $exception, $id );
             }
         } else {
-            return new \WP_Error( "{$id}-api-invalid-call", "Invalid API call." );
+            return new Error( "{$id}-api-invalid-call", "Invalid API call." );
         }
     }
 

@@ -75,7 +75,7 @@ if ( ! function_exists( 'Brain\exception2WPError' ) ) {
             $name .= $exc->getCode() ? '-' . $exc->getCode() : '';
         }
         $msg .= $exc->getMessage() ? '. ' . $exc->getMessage() : '';
-        return new \WP_Error( "{$prefix}-exception-" . $name, $msg );
+        return new Error( "{$prefix}-exception-" . $name, $msg );
     }
 
 }
