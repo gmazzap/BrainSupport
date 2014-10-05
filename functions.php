@@ -123,6 +123,37 @@ if ( ! function_exists( 'Brain\getQueryType' ) ) {
 
 }
 
+if ( ! function_exists( 'Brain\getQueryTypes' ) ) {
+
+    function getQueryTypes( \WP_Query $query = NULL ) {
+        $type = getQueryType( $query );
+        if ( $type === FALSE ) {
+            return FALSE;
+        }
+        if ( $type === 'index' ) {
+            return [ 'index' ];
+        }
+        $types = [ $type ];
+        if ( in_array( $type, [ 'taxonomy', 'category', 'tag', 'author', 'date' ], TRUE ) ) {
+            $types[] = 'archive';
+        }
+        if ( $type === 'frontpage' ) {
+            $types[] = get_option( 'show_on_front' ) === 'page' ? 'page' : 'home';
+        }
+        $types[] = 'index';
+        return $types;
+    }
+
+}
+
+if ( ! function_exists( 'Brain\getMainQueryTypes' ) ) {
+
+    function getMainQueryTypes() {
+        return getQueryTypes();
+    }
+
+}
+
 if ( ! function_exists( 'Brain\stringKeyed' ) ) {
 
     /**
