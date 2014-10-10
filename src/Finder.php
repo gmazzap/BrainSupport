@@ -29,7 +29,7 @@ class Finder {
         if ( ! empty( $rel ) ) {
             $path .= filter_var( trim( wp_normalize_path( $rel ), '\\/ ' ), FILTER_SANITIZE_URL );
         }
-        return trailingslashit( wp_normalize_path( $path ) );
+        return pathinfo( $rel, PATHINFO_EXTENSION ) !== '' ? $path : trailingslashit( $path );
     }
 
     /**
@@ -44,7 +44,7 @@ class Finder {
         if ( ! empty( $rel ) ) {
             $url .= filter_var( trim( wp_normalize_path( $rel ), '\\/ ' ), FILTER_SANITIZE_URL );
         }
-        return trailingslashit( $url );
+        return untrailingslashit( $url );
     }
 
     private function getDir( $path ) {
