@@ -22,37 +22,66 @@
 abstract class Facade {
 
     public static function getBindId() {
-        throw new \RuntimeException( __METHOD__ . ' must be overridden in concrete facades' );
+        throw new \RuntimeException( __METHOD__ . ' must be overridden in concrete facades.' );
     }
 
-    public static function api() {
-        return Container::instance()->get( static::getBindId() );
+    public static function api( $id = NULL ) {
+        if ( is_null( $id ) ) {
+            $id = static::getBindId();
+        }
+        try {
+            return Container::instance()->get( $id );
+        } catch ( \ Exception $e ) {
+            $code = preg_replace( '/[^\w]/', '-', strtolower( get_called_class() ) );
+            return exception2WPError( $e, $code );
+        }
     }
 
     public static function __callStatic( $name, $arguments ) {
-        if ( ! Container::instance() instanceof Container ) {
-            return new \WP_Error( "brain-not-ready", "Brain container is not ready." );
+        $id = self::getApiId();
+        $api = is_wp_error( $id ) ? $id : self::getApiObject( $id );
+        if ( is_wp_error( $api ) ) {
+            return $api;
         }
-        $id = static::getBindId();
-        if ( ! is_string( $id ) || empty( $id ) ) {
-            return new \WP_Error( "brain-facade-bad-id", "Bad or empty id facade." );
-        }
-        if ( ! is_object( static::api() ) ) {
-            return new \WP_Error( "{$id}-api-not-ready", "API object is not ready." );
-        }
-        if ( method_exists( static::api(), $name ) ) {
-            try {
-                return call_user_func_array( [ static::api(), $name ], $arguments );
-            } catch ( \Exception $exception ) {
-                return \Brain\exception2WPError( $exception, $id );
-            }
-        } else {
-            return new Error( "{$id}-api-invalid-call", "Invalid API call." );
-        }
+        return static::execute( $api, $name, $arguments, $id );
     }
 
     public function __call( $name, $arguments ) {
         return static::__callStatic( $name, $arguments );
+    }
+
+    private static function getApiId() {
+        if ( ! Container::instance() instanceof Container ) {
+            return exception2WPError( new \RuntimeException( "Brain not ready." ) );
+        }
+        $id = static::getBindId();
+        if ( ! is_string( $id ) || empty( $id ) ) {
+            $code = preg_replace( '/[^\w]/', '-', strtolower( get_called_class() ) );
+            return exception2WPError( new \RuntimeException( "Bad or empty facade ID." ), $code );
+        }
+        return $id;
+    }
+
+    private static function getApiObject( $id ) {
+        $api = static::api( $id );
+        if ( is_wp_error( $api ) ) {
+            return $api;
+        }
+        if ( ! is_object( $api ) ) {
+            return exception2WPError( new \RuntimeException( "API object is not ready." ), $id );
+        }
+        return $api;
+    }
+
+    private static function execute( $api, $name, $arguments, $id ) {
+        if ( method_exists( $api, $name ) ) {
+            try {
+                return call_user_func_array( [ $api, $name ], $arguments );
+            } catch ( \Exception $exception ) {
+                return exception2WPError( $exception, $id );
+            }
+        }
+        return exception2WPError( new \RuntimeException( "Invalid API call." ), $id );
     }
 
 }

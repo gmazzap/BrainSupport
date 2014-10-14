@@ -66,17 +66,23 @@ if ( ! function_exists( 'Brain\exception2WPError' ) ) {
      */
     function exception2WPError( \Exception $exc = NULL, $prefix = 'brain', $code = '', $msg = '' ) {
         if ( is_null( $exc ) ) return;
-        if ( ! is_string( $prefix ) ) $prefix = 'brain';
-        if ( ! is_string( $msg ) ) $msg = '';
-        $name = get_class( $exc );
+        if ( ! is_string( $prefix ) || empty( $prefix ) ) {
+            $prefix = 'brain';
+        }
+        $name = preg_replace( '/[^\w]/', '-', strtolower( get_class( $exc ) ) );
         if ( is_string( $code ) && ! empty( $code ) ) {
             $name .= "-{$code}";
-        } else {
-            $name .= $exc->getCode() ? '-' . $exc->getCode() : '';
         }
-        $msg .= $exc->getMessage() ? '. ' . $exc->getMessage() . '. ' : '';
+        if ( ! is_string( $msg ) ) {
+            $msg = '';
+        }
+        $msg .= $exc->getMessage() !== '' ? $exc->getMessage() : '';
+        if ( empty( $msg ) ) {
+            $msg = 'Unknown error';
+        }
+        $msg = rtrim( $msg, '. ' ) . '. ';
         $msg .= 'STACK TRACE: ' . $exc->getTraceAsString();
-        return new Error( "{$prefix}-exception-" . $name, $msg );
+        return new Error( "{$prefix}-exception-{$name}", $msg );
     }
 
 }

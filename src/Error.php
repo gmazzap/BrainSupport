@@ -3,7 +3,7 @@
 class Error extends \WP_Error implements \ArrayAccess {
 
     function __call( $name, $arguments ) {
-        $code = "brain-call-on-error-{$name}";
+        $code = 'brain-call-on-error-' . strtolower( $name );
         $message = "The function {$name} was called on an error object";
         $this->add( $code, $message, $arguments );
         return $this;
