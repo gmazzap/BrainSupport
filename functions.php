@@ -21,7 +21,7 @@ if ( ! function_exists( 'Brain\isAjax' ) ) {
      * @return boolean
      */
     function isAjax() {
-        defined( 'DOING_AJAX' ) && DOING_AJAX;
+        return defined( 'DOING_AJAX' ) && DOING_AJAX;
     }
 
 }
